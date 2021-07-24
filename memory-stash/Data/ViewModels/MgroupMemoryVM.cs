@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace memory_stash.Data.ViewModels
 {
-    public class MgroupVM
+    public class MgroupMemoryVM
     {
+        //public MgroupMemoryVM()
+        //{
+        //    Memories = new HashSet<Memory>();
+        //}
+
         public int Id { get; set; }
         public string Name { get; set; }
+        public List<MemoryVM> Memories { get; set; }
     }
 }
+

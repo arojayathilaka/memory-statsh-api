@@ -43,6 +43,21 @@ namespace memory_stash.Controllers
             return mgroup;
         }
 
+        // GET: api/Mgroups/memories/5
+        [HttpGet("memories/{id}")]
+        public async Task<ActionResult<IEnumerable<MemoryVM>>> GetMgroupMemories(int id)
+        {
+            return await _mGroupsService.GetMgroupMemories(id);
+        }
+
+
+        // GET: api/Mgroups/users/5
+        [HttpGet("users/{id}")]
+        public async Task<ActionResult<IEnumerable<GroupUser>>> GetMgroupUsers(int id)
+        {
+            return await _mGroupsService.GetMgroupUsers(id);
+        }
+
         // PUT: api/Mgroups/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -75,7 +90,7 @@ namespace memory_stash.Controllers
         // POST: api/Mgroups
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Mgroup>> PostMgroup(MgroupVM mgroup)
+        public async Task<ActionResult<MgroupVM>> PostMgroup(MgroupVM mgroup)
         {
 
             if(mgroup.Id == 0)
@@ -101,6 +116,38 @@ namespace memory_stash.Controllers
 
             return CreatedAtAction("GetMgroup", new { id = mgroup.Id }, mgroup);
         }
+
+
+        // POST: api/Mgroups
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("user")]
+        public async Task<ActionResult<MgroupVM>> PostMgroupUser(GroupUser groupUser)
+        {
+
+            if (groupUser.Id == 0)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _mGroupsService.PostMgroupUser(groupUser);
+            }
+            catch (DbUpdateException)
+            {
+                if (_mGroupsService.MgroupUserExists(groupUser.GroupId, groupUser.UserId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetMgroupUser", new { id = groupUser.Id }, groupUser);
+        }
+
 
         // DELETE: api/Mgroups/5
         [HttpDelete("{id}")]

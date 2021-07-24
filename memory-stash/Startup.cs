@@ -44,6 +44,7 @@ namespace memory_stash
 
             // Configure the services
             services.AddTransient<MgroupsService>();
+            services.AddTransient<MemoriesService>();
 
             services.AddSwaggerGen(c =>
             {

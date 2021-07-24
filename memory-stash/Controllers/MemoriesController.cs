@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using memory_stash.Models;
+using memory_stash.Data.Services;
+using memory_stash.Data.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace memory_stash.Controllers
 {
@@ -13,27 +16,30 @@ namespace memory_stash.Controllers
     [ApiController]
     public class MemoriesController : ControllerBase
     {
-        private readonly MemoryStashDbContext _context;
+        private readonly MemoriesService _memoriesService;
+        private readonly MgroupsService _mGroupsService;
 
-        public MemoriesController(MemoryStashDbContext context)
+
+        public MemoriesController(MemoriesService memoriesService, MgroupsService mGroupsService)
         {
-            _context = context;
+            _memoriesService = memoriesService;
+            _mGroupsService = mGroupsService;
         }
 
         // GET: api/Memories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Memory>>> GetMemories()
+        public async Task<ActionResult<IEnumerable<MemoryVM>>> GetMemories()
         {
-            return await _context.Memories.ToListAsync();
+            return await _memoriesService.GetMemories();
         }
 
         // GET: api/Memories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Memory>> GetMemory(int id)
+        public async Task<ActionResult<MemoryVM>> GetMemory(int id)
         {
-            var memory = await _context.Memories.FindAsync(id);
+            var memory = await _memoriesService.GetMemory(id);
 
-            if (memory == null)
+            if (memory.Id == 0)
             {
                 return NotFound();
             }
@@ -44,22 +50,20 @@ namespace memory_stash.Controllers
         // PUT: api/Memories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMemory(int id, Memory memory)
+        public async Task<IActionResult> PutMemory(int id, MemoryVM memory)
         {
-            if (id != memory.Id)
+            if (id != memory.Id || !_mGroupsService.MgroupExists(memory.GroupId))
             {
                 return BadRequest();
             }
 
-            _context.Entry(memory).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _memoriesService.PutMemory(memory);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MemoryExists(id))
+                if (!_memoriesService.MemoryExists(id))
                 {
                     return NotFound();
                 }
@@ -75,16 +79,20 @@ namespace memory_stash.Controllers
         // POST: api/Memories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Memory>> PostMemory(Memory memory)
+        public async Task<ActionResult<Memory>> PostMemory(MemoryVM memory)
         {
-            _context.Memories.Add(memory);
+            if (memory.Id == 0)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                await _context.SaveChangesAsync();
+                await _memoriesService.PostMemory(memory);
             }
             catch (DbUpdateException)
             {
-                if (MemoryExists(memory.Id))
+                if (_memoriesService.MemoryExists(memory.Id))
                 {
                     return Conflict();
                 }
@@ -101,21 +109,15 @@ namespace memory_stash.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMemory(int id)
         {
-            var memory = await _context.Memories.FindAsync(id);
-            if (memory == null)
+            if (!_memoriesService.MemoryExists(id))
             {
                 return NotFound();
             }
 
-            _context.Memories.Remove(memory);
-            await _context.SaveChangesAsync();
+            await _memoriesService.DeleteMemory(id);
 
             return NoContent();
         }
 
-        private bool MemoryExists(int id)
-        {
-            return _context.Memories.Any(e => e.Id == id);
-        }
     }
 }
