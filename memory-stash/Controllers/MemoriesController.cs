@@ -9,9 +9,12 @@ using memory_stash.Models;
 using memory_stash.Data.Services;
 using memory_stash.Data.ViewModels;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
+using memory_stash.Data.Models;
 
 namespace memory_stash.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MemoriesController : ControllerBase

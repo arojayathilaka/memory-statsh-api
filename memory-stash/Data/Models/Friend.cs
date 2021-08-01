@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace memory_stash.Models
+namespace memory_stash.Data.Models
 {
     public partial class Friend
     {

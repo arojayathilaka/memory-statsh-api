@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using memory_stash.Models;
 using memory_stash.Data.ViewModels;
 using memory_stash.Data.Services;
+using memory_stash.Data.Models;
 
 namespace memory_stash.Controllers
 {
@@ -43,16 +44,16 @@ namespace memory_stash.Controllers
             return mgroup;
         }
 
-        // GET: api/Mgroups/memories/5
-        [HttpGet("memories/{id}")]
+        // GET: api/Mgroups/5/memories
+        [HttpGet("{id}/memories")]
         public async Task<ActionResult<IEnumerable<MemoryVM>>> GetMgroupMemories(int id)
         {
             return await _mGroupsService.GetMgroupMemories(id);
         }
 
 
-        // GET: api/Mgroups/users/5
-        [HttpGet("users/{id}")]
+        // GET: api/Mgroups/5/users
+        [HttpGet("{id}/users")]
         public async Task<ActionResult<IEnumerable<GroupUser>>> GetMgroupUsers(int id)
         {
             return await _mGroupsService.GetMgroupUsers(id);

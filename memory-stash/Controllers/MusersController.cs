@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using memory_stash.Models;
+using memory_stash.Data.Services;
+using memory_stash.Data.ViewModels;
+using System.Text.RegularExpressions;
+using memory_stash.Data.Models;
 
 namespace memory_stash.Controllers
 {
@@ -13,27 +17,27 @@ namespace memory_stash.Controllers
     [ApiController]
     public class MusersController : ControllerBase
     {
-        private readonly MemoryStashDbContext _context;
+        private readonly MusersService _musersService;
 
-        public MusersController(MemoryStashDbContext context)
+        public MusersController(MusersService musersService)
         {
-            _context = context;
+            _musersService = musersService;
         }
 
         // GET: api/Musers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Muser>>> GetMusers()
+        public async Task<ActionResult<IEnumerable<MuserVM>>> GetMusers()
         {
-            return await _context.Musers.ToListAsync();
+            return await _musersService.GetMusers();
         }
 
         // GET: api/Musers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Muser>> GetMuser(int id)
+        public async Task<ActionResult<MuserVM>> GetMuser(int id)
         {
-            var muser = await _context.Musers.FindAsync(id);
+            var muser = await _musersService.GetMuser(id);
 
-            if (muser == null)
+            if (muser.Id == 0)
             {
                 return NotFound();
             }
@@ -41,25 +45,30 @@ namespace memory_stash.Controllers
             return muser;
         }
 
+        // GET: api/Musers/5/group
+        [HttpGet("{id}/group")]
+        public async Task<ActionResult<IEnumerable<GroupUser>>> GetUsersGroup(int id)
+        {
+            return await _musersService.GetUsersGroup(id);
+        }
+
         // PUT: api/Musers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMuser(int id, Muser muser)
+        public async Task<IActionResult> PutMuser(int id, MuserVM muser)
         {
             if (id != muser.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(muser).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _musersService.PutMuser(muser);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MuserExists(id))
+                if (!_musersService.MuserExists(id))
                 {
                     return NotFound();
                 }
@@ -75,16 +84,20 @@ namespace memory_stash.Controllers
         // POST: api/Musers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Muser>> PostMuser(Muser muser)
+        public async Task<ActionResult<Muser>> PostMuser(MuserVM muser)
         {
-            _context.Musers.Add(muser);
+            if (muser.Id == 0)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                await _context.SaveChangesAsync();
+                await _musersService.PostMuser(muser);
             }
             catch (DbUpdateException)
             {
-                if (MuserExists(muser.Id))
+                if (_musersService.MuserExists(muser.Id))
                 {
                     return Conflict();
                 }
@@ -101,21 +114,15 @@ namespace memory_stash.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMuser(int id)
         {
-            var muser = await _context.Musers.FindAsync(id);
-            if (muser == null)
+            if (!_musersService.MuserExists(id))
             {
                 return NotFound();
             }
 
-            _context.Musers.Remove(muser);
-            await _context.SaveChangesAsync();
+            await _musersService.DeleteMuser(id);
 
             return NoContent();
         }
 
-        private bool MuserExists(int id)
-        {
-            return _context.Musers.Any(e => e.Id == id);
-        }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace memory_stash.Models
+namespace memory_stash.Data.Models
 {
     public partial class MemoryStashDbContext : DbContext
     {
@@ -162,6 +162,11 @@ namespace memory_stash.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);

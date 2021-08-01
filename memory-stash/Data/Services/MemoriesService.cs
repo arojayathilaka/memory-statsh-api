@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using memory_stash.Data.Models;
 
 namespace memory_stash.Data.Services
 {

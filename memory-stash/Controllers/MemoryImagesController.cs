@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using memory_stash.Models;
+using memory_stash.Data.Models;
 
 namespace memory_stash.Controllers
 {

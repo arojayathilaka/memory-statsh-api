@@ -1,10 +1,9 @@
-﻿using memory_stash.Data.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 #nullable disable
 
-namespace memory_stash.Models
+namespace memory_stash.Data.Models
 {
     public partial class Mgroup
     {
