@@ -9,79 +9,79 @@ using System.Threading.Tasks;
 
 namespace memory_stash.Data.Services
 {
-    public class MusersService
+    public class UsersService
     {
         private readonly MemoryStashDbContext _context;
 
-        public MusersService(MemoryStashDbContext context)
+        public UsersService(MemoryStashDbContext context)
         {
             _context = context;
         }
 
-        public async Task<List<MuserVM>> GetMusers()
+        public async Task<List<UserVM>> GetMusers()
         {
-            return await _context.Musers
+            return await _context.Users
                 .Select(u => ConvertToMuserVM(u))
                 .ToListAsync();
         }
 
-        public async Task<MuserVM> GetMuser(int id)
+        public async Task<UserVM> GetMuser(int id)
         {
-            var muser = await _context.Musers.FindAsync(id);
+            var muser = await _context.Users.FindAsync(id);
 
             return ConvertToMuserVM(muser);
         }
 
-        public async Task<List<GroupUser>> GetUsersGroup(int id)
+        public async Task<List<Group_User>> GetUsersGroup(int id)
         {
-            var muser = await _context.Musers.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            _context.Entry(muser)
-                .Collection(usr => usr.GroupUsers)
+            _context.Entry(user)
+                .Collection(usr => usr.Groups_Users)
                 .Query()
                 .Include(gu => gu.Group)
                 .Load();
 
-            return muser.GroupUsers.ToList();
+            return user.Groups_Users.ToList();
         }
 
-        public async Task PutMuser(MuserVM muserVM)
+        public async Task PutMuser(UserVM muserVM)
         {
-            var muser = ConvertToMuser(muserVM);
-            _context.Entry(muser).State = EntityState.Modified;
+            var user = ConvertToMuser(muserVM);
+            _context.Entry(user).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task PostMuser(MuserVM muserVM)
+        public async Task PostMuser(UserVM muserVM)
         {
-            var muser = ConvertToMuser(muserVM);
-            _context.Musers.Add(muser);
+            var user = ConvertToMuser(muserVM);
+            _context.Users.Add(user);
 
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteMuser(int id)
         {
-            var muser = await _context.Musers.FindAsync(id);
-            _context.Musers.Remove(muser);
+            var user = await _context.Users.FindAsync(id);
+            _context.Users.Remove(user);
 
             await _context.SaveChangesAsync();
         }
 
         public bool MuserExists(int id)
         {
-            return _context.Musers.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
 
-        public static MuserVM ConvertToMuserVM(Muser user)
+        public static UserVM ConvertToMuserVM(User user)
         {
             if (user == null)
             {
-                return new MuserVM();
+                return new UserVM();
             }
 
-            return new MuserVM()
+            return new UserVM()
             {
                 Id = user.Id,
                 Name= user.Name,
@@ -90,9 +90,9 @@ namespace memory_stash.Data.Services
             };
         }
 
-        public static Muser ConvertToMuser(MuserVM user)
+        public static User ConvertToMuser(UserVM user)
         {
-            return new Muser()
+            return new User()
             {
                 Id = user.Id,
                 Name = user.Name,

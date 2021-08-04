@@ -11,6 +11,7 @@ namespace memory_stash.Data.Models
         public string ImageUrl { get; set; }
         public int FriendId { get; set; }
 
+        // Navigation Properties
         public virtual Friend Friend { get; set; }
     }
 }

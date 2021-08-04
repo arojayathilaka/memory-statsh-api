@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace memory_stash.Data.ViewModels
 {
-    public class MgroupMemoryVM
+    public class GroupMemoryVM
     {
         //public MgroupMemoryVM()
         //{

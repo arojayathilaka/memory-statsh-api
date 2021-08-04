@@ -14,34 +14,34 @@ namespace memory_stash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MgroupsController : ControllerBase
+    public class GroupsController : ControllerBase
     {
-        private readonly MgroupsService _mGroupsService;
+        private readonly GroupsService _mGroupsService;
 
-        public MgroupsController(MgroupsService mGroupsService)
+        public GroupsController(GroupsService mGroupsService)
         {
             _mGroupsService = mGroupsService;
         }
 
         // GET: api/Mgroups
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MgroupVM>>> GetMgroups()
+        public async Task<ActionResult<IEnumerable<GroupVM>>> GetMgroups()
         {
             return await _mGroupsService.GetMgroups();
         }
 
         // GET: api/Mgroups/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MgroupVM>> GetMgroup(int id)
+        public async Task<ActionResult<GroupVM>> GetMgroup(int id)
         {
-            var mgroup = await _mGroupsService.GetMgroup(id);
+            var group = await _mGroupsService.GetMgroup(id);
 
-            if (mgroup.Id == 0)
+            if (group.Name == null)
             {
                 return NotFound();
             }
 
-            return mgroup;
+            return group;
         }
 
         // GET: api/Mgroups/5/memories
@@ -54,7 +54,7 @@ namespace memory_stash.Controllers
 
         // GET: api/Mgroups/5/users
         [HttpGet("{id}/users")]
-        public async Task<ActionResult<IEnumerable<GroupUser>>> GetMgroupUsers(int id)
+        public async Task<ActionResult<IEnumerable<Group_User>>> GetMgroupUsers(int id)
         {
             return await _mGroupsService.GetMgroupUsers(id);
         }
@@ -62,16 +62,16 @@ namespace memory_stash.Controllers
         // PUT: api/Mgroups/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMgroup(int id, MgroupVM mgroup)
+        public async Task<IActionResult> PutMgroup(int id, GroupUpdateVM group)
         {
-            if (id != mgroup.Id)
+            if (id != group.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _mGroupsService.PutMgroup(mgroup);
+                await _mGroupsService.PutMgroup(group);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -91,38 +91,26 @@ namespace memory_stash.Controllers
         // POST: api/Mgroups
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MgroupVM>> PostMgroup(MgroupVM mgroup)
+        public async Task<ActionResult<GroupVM>> PostGroup(GroupVM group)
         {
-
-            if(mgroup.Id == 0)
-            {
-                return BadRequest();
-            }
 
             try
             {
-                await _mGroupsService.PostMgroup(mgroup);
+                await _mGroupsService.PostMgroup(group);
             }
             catch (DbUpdateException)
             {
-                if (_mGroupsService.MgroupExists(mgroup.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetMgroup", new { id = mgroup.Id }, mgroup);
+            return CreatedAtAction(nameof(PostGroup), new { name = group.Name }, group);
         }
 
 
         // POST: api/Mgroups
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("user")]
-        public async Task<ActionResult<MgroupVM>> PostMgroupUser(GroupUser groupUser)
+        public async Task<ActionResult<GroupVM>> PostMgroupUser(Group_User groupUser)
         {
 
             if (groupUser.Id == 0)

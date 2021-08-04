@@ -15,25 +15,25 @@ namespace memory_stash.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MusersController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly MusersService _musersService;
+        private readonly UsersService _musersService;
 
-        public MusersController(MusersService musersService)
+        public UsersController(UsersService musersService)
         {
             _musersService = musersService;
         }
 
         // GET: api/Musers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MuserVM>>> GetMusers()
+        public async Task<ActionResult<IEnumerable<UserVM>>> GetMusers()
         {
             return await _musersService.GetMusers();
         }
 
         // GET: api/Musers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MuserVM>> GetMuser(int id)
+        public async Task<ActionResult<UserVM>> GetMuser(int id)
         {
             var muser = await _musersService.GetMuser(id);
 
@@ -47,7 +47,7 @@ namespace memory_stash.Controllers
 
         // GET: api/Musers/5/group
         [HttpGet("{id}/group")]
-        public async Task<ActionResult<IEnumerable<GroupUser>>> GetUsersGroup(int id)
+        public async Task<ActionResult<IEnumerable<Group_User>>> GetUsersGroup(int id)
         {
             return await _musersService.GetUsersGroup(id);
         }
@@ -55,7 +55,7 @@ namespace memory_stash.Controllers
         // PUT: api/Musers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMuser(int id, MuserVM muser)
+        public async Task<IActionResult> PutMuser(int id, UserVM muser)
         {
             if (id != muser.Id)
             {
@@ -84,7 +84,7 @@ namespace memory_stash.Controllers
         // POST: api/Musers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Muser>> PostMuser(MuserVM muser)
+        public async Task<ActionResult<User>> PostMuser(UserVM muser)
         {
             if (muser.Id == 0)
             {

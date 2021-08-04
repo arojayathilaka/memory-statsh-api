@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace memory_stash.Data.ViewModels
 {
-    public class MuserVM
+    public class UserVM
     {
         public int Id { get; set; }
         public string Name { get; set; }

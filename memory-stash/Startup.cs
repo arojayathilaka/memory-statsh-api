@@ -79,9 +79,9 @@ namespace memory_stash
             services.AddSingleton<IAuthService>(new AuthService());
 
             // Configure the services
-            services.AddTransient<MgroupsService>();
+            services.AddTransient<GroupsService>();
             services.AddTransient<MemoriesService>();
-            services.AddTransient<MusersService>();
+            services.AddTransient<UsersService>();
             services.AddTransient<AuthService>();
 
             services.AddSwaggerGen(c =>

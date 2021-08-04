@@ -31,7 +31,7 @@ namespace memory_stash.Data.Services
 
         public string Authenticate(UserAuth userAuth)
         {
-            if(!_context.Musers.Any(m => m.Name == userAuth.UserName && m.Password == userAuth.Password))
+            if(!_context.Users.Any(m => m.Name == userAuth.UserName && m.Password == userAuth.Password))
             {
                 return null;
             }

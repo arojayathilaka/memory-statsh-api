@@ -20,10 +20,10 @@ namespace memory_stash.Controllers
     public class MemoriesController : ControllerBase
     {
         private readonly MemoriesService _memoriesService;
-        private readonly MgroupsService _mGroupsService;
+        private readonly GroupsService _mGroupsService;
 
 
-        public MemoriesController(MemoriesService memoriesService, MgroupsService mGroupsService)
+        public MemoriesController(MemoriesService memoriesService, GroupsService mGroupsService)
         {
             _memoriesService = memoriesService;
             _mGroupsService = mGroupsService;

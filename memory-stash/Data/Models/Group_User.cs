@@ -5,19 +5,15 @@ using System.Collections.Generic;
 
 namespace memory_stash.Data.Models
 {
-    public partial class Memory
+    public partial class Group_User
     {
         public int Id { get; set; }
-        public DateTime? Mdate { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-
 
         // Navigation Properties
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
 
         public int GroupId { get; set; }
         public virtual Group Group { get; set; }
-
-        public virtual List<MemoryImage> MemoryImages { get; set; }
     }
 }
