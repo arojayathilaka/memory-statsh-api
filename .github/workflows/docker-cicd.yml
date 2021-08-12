@@ -8,6 +8,7 @@ on:
     
 env:
   DOCKER_IMAGE_NAME: 'arojayathilaka/memory-stash'
+  AZURE_WEB_APP: 'memory-stash-api-docker'
   
 jobs:
 
@@ -26,3 +27,18 @@ jobs:
       run: docker tag '${{env.DOCKER_IMAGE_NAME}}' '${{env.DOCKER_IMAGE_NAME}}'
     - name: Push the Docker image
       run: docker push '${{env.DOCKER_IMAGE_NAME}}'
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Azure WebApp Deployement
+      uses: Azure/webapps-deploy@v2
+      with: 
+        # Name of the Azure Web App
+        app-name: '${{env.AZURE_WEB_APP}}'
+        # Applies to Web App Container only
+        images: '${{env.DOCKER_IMAGE_NAME}}'
+        
+        
