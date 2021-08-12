@@ -11,10 +11,10 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /src
-COPY ["memory-stash.csproj", "./"]
-RUN dotnet restore "./memory-stash.csproj"
+COPY ["memory-stash/memory-stash.csproj", "memory-stash/"]
+RUN dotnet restore "memory-stash/memory-stash.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/memory-stash"
 RUN dotnet build "memory-stash.csproj" -c Release -o /app/build
 
 FROM build AS publish
