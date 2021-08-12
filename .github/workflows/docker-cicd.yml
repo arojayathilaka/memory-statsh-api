@@ -8,7 +8,6 @@ on:
     
 env:
   DOCKER_IMAGE_NAME: 'arojayathilaka/memory-stash'
-  DOCKER_FILE_PATH: './memory-stash'
   
 jobs:
 
@@ -19,4 +18,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file ./memory-stash/Dockerfile --tag '${{env.DOCKER_IMAGE_NAME}}'
+      run: docker build . --file Dockerfile --tag '${{env.DOCKER_IMAGE_NAME}}'
