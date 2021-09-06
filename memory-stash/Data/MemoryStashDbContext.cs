@@ -6,24 +6,21 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace memory_stash.Data.Models
 {
-    public partial class MemoryStashDbContext : DbContext
+    public class MemoryStashDbContext : DbContext
     {
-        public MemoryStashDbContext()
-        {
-        }
 
         public MemoryStashDbContext(DbContextOptions<MemoryStashDbContext> options)
             : base(options)
         {
         }
             
-        public virtual DbSet<Friend> Friends { get; set; }
-        public virtual DbSet<FriendImage> FriendImages { get; set; }
-        public virtual DbSet<Group_User> Groups_Users { get; set; }
-        public virtual DbSet<Memory> Memories { get; set; }
-        public virtual DbSet<MemoryImage> MemoryImages { get; set; }
-        public virtual DbSet<Group> Groups { get; set; }
-        public virtual DbSet<User> Users { get; set; }
+        public DbSet<Friend> Friends { get; set; }
+        public DbSet<FriendImage> FriendImages { get; set; }
+        public DbSet<Group_User> Groups_Users { get; set; }
+        public DbSet<Memory> Memories { get; set; }
+        public DbSet<MemoryImage> MemoryImages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

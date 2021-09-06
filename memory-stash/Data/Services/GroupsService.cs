@@ -1,11 +1,8 @@
 ﻿using memory_stash.Data.Models;
 using memory_stash.Data.ViewModels;
-using memory_stash.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Group = memory_stash.Data.Models.Group;
 
@@ -27,6 +24,7 @@ namespace memory_stash.Data.Services
                 .ToListAsync();
         }
 
+
         public async Task<GroupVM> GetMgroup(int id)
         {
             var mgroup = await _context.Groups.FindAsync(id);
@@ -34,7 +32,8 @@ namespace memory_stash.Data.Services
             return ConvertToMgroupVM(mgroup);
         }
         
-        public async Task<List<MemoryVM>> GetMgroupMemories(int id)
+
+        public async Task<GroupMemoryVM> GetMgroupMemories(int id)
         {
             var mgroup = await _context.Groups.FindAsync(id);
 
@@ -42,8 +41,11 @@ namespace memory_stash.Data.Services
                 .Collection(grp => grp.Memories)
                 .Load();
 
-            return mgroup.Memories.ToList().Select(m => MemoriesService.ConvertToMeomoryVM(m)).ToList();
+            //return mgroup.Memories
+            //    .ToList().Select(m => MemoriesService.ConvertToMeomoryVM(m)).ToList();
+            return ConvertToMgroupMemoryVM(mgroup);
         }
+
 
         public async Task<List<Group_User>> GetMgroupUsers(int id)
         {
@@ -58,6 +60,7 @@ namespace memory_stash.Data.Services
             return mgroup.Groups_Users.ToList();
         }
 
+
         public async Task PutMgroup(GroupUpdateVM group)
         {
             var mGroup = ConvertToGroupFromUpdate(group);
@@ -66,13 +69,15 @@ namespace memory_stash.Data.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task PostMgroup(GroupVM mgroup)
+
+        public async Task PostMgroup(GroupAddVM mgroup)
         {
-            var mGroup = ConvertToGroup(mgroup);
+            var mGroup = ConvertToGroupFromAdd(mgroup);
             _context.Groups.Add(mGroup); 
 
             await _context.SaveChangesAsync();
         }
+
 
         public async Task PostMgroupUser(Group_User groupUser)
         {
@@ -82,6 +87,7 @@ namespace memory_stash.Data.Services
             await _context.SaveChangesAsync();
         }
 
+
         public async Task DeleteMgroup(int id)
         {
             var mgroup = await _context.Groups.FindAsync(id);
@@ -90,15 +96,18 @@ namespace memory_stash.Data.Services
             await _context.SaveChangesAsync();
         }
 
+
         public bool MgroupExists(int id)
         {
             return _context.Groups.Any(e => e.Id == id);
         }
 
+
         public bool MgroupUserExists(int groupId, int userId)
         {
             return _context.Groups_Users.Any(e => e.GroupId == groupId && e.UserId == userId);
         }
+
 
         private static GroupVM ConvertToMgroupVM(Group mgroup)
         {
@@ -109,6 +118,7 @@ namespace memory_stash.Data.Services
 
             return new GroupVM()
             {
+                Id = mgroup.Id,
                 Name = mgroup.Name,
             };
         }
@@ -131,19 +141,20 @@ namespace memory_stash.Data.Services
             };
         }
 
-        private static Group ConvertToGroup(GroupVM mgroup)
-        {
-            return new Group()
-            {
-                Name = mgroup.Name
-            };
-        }
 
         private static Group ConvertToGroupFromUpdate(GroupUpdateVM group)
         {
             return new Group()
             {
                 Id = group.Id,
+                Name = group.Name
+            };
+        }
+
+        private static Group ConvertToGroupFromAdd(GroupAddVM group)
+        {
+            return new Group()
+            {
                 Name = group.Name
             };
         }

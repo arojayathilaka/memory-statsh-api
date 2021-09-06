@@ -25,21 +25,23 @@ namespace memory_stash.Data.Services
                 .ToListAsync();
         }
 
-        public async Task PutMemory(MemoryVM memoryVM)
+        public async Task PutMemory(MemoryUpdateVM memoryVM)
         {
-            var memory = ConvertToMemory(memoryVM);
+            var memory = ConvertToMemoryFromUpdate(memoryVM);
             _context.Entry(memory).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task PostMemory(MemoryVM memoryVM)
+
+        public async Task PostMemory(MemoryAddVM memoryVM)
         {
-            var memory = ConvertToMemory(memoryVM);
+            var memory = ConvertToMemoryFromAdd(memoryVM);
             _context.Memories.Add(memory);
 
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteMemory(int id)
         {
@@ -54,11 +56,11 @@ namespace memory_stash.Data.Services
             return _context.Memories.Any(e => e.Id == id);
         }
 
-        public async Task<MemoryVM> GetMemory(int id)
+        public async Task<Memory> GetMemory(int id)
         {
             var mgroup = await _context.Memories.FindAsync(id);
 
-            return ConvertToMeomoryVM(mgroup);
+            return mgroup;
         }
 
         public static MemoryVM ConvertToMeomoryVM(Memory memory)
@@ -70,7 +72,7 @@ namespace memory_stash.Data.Services
 
             return new MemoryVM()
             {
-                Id = memory.Id,
+                Id= memory.Id,
                 Mdate = memory.Mdate,
                 Title = memory.Title,
                 Description = memory.Description,
@@ -82,7 +84,29 @@ namespace memory_stash.Data.Services
         {
             return new Memory()
             {
+                Mdate = memory.Mdate,
+                Title = memory.Title,
+                Description = memory.Description,
+                GroupId = memory.GroupId,
+            };
+        }
+
+        private static Memory ConvertToMemoryFromUpdate(MemoryUpdateVM memory)
+        {
+            return new Memory()
+            {
                 Id = memory.Id,
+                Mdate = memory.Mdate,
+                Title = memory.Title,
+                Description = memory.Description,
+                GroupId = memory.GroupId,
+            };
+        }
+
+        private static Memory ConvertToMemoryFromAdd(MemoryAddVM memory)
+        {
+            return new Memory()
+            {
                 Mdate = memory.Mdate,
                 Title = memory.Title,
                 Description = memory.Description,

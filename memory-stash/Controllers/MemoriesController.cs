@@ -14,7 +14,7 @@ using memory_stash.Data.Models;
 
 namespace memory_stash.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MemoriesController : ControllerBase
@@ -29,6 +29,7 @@ namespace memory_stash.Controllers
             _mGroupsService = mGroupsService;
         }
 
+
         // GET: api/Memories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemoryVM>>> GetMemories()
@@ -36,9 +37,10 @@ namespace memory_stash.Controllers
             return await _memoriesService.GetMemories();
         }
 
+
         // GET: api/Memories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MemoryVM>> GetMemory(int id)
+        public async Task<ActionResult<Memory>> GetMemory(int id)
         {
             var memory = await _memoriesService.GetMemory(id);
 
@@ -50,10 +52,10 @@ namespace memory_stash.Controllers
             return memory;
         }
 
+
         // PUT: api/Memories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMemory(int id, MemoryVM memory)
+        public async Task<IActionResult> PutMemory(int id, MemoryUpdateVM memory)
         {
             if (id != memory.Id || !_mGroupsService.MgroupExists(memory.GroupId))
             {
@@ -79,15 +81,11 @@ namespace memory_stash.Controllers
             return NoContent();
         }
 
+
         // POST: api/Memories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Memory>> PostMemory(MemoryVM memory)
+        public async Task<ActionResult<Memory>> PostMemory(MemoryAddVM memory)
         {
-            if (memory.Id == 0)
-            {
-                return BadRequest();
-            }
 
             try
             {
@@ -95,18 +93,12 @@ namespace memory_stash.Controllers
             }
             catch (DbUpdateException)
             {
-                if (_memoriesService.MemoryExists(memory.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetMemory", new { id = memory.Id }, memory);
+            return CreatedAtAction(nameof(PostMemory), new { title = memory.Title }, memory);
         }
+
 
         // DELETE: api/Memories/5
         [HttpDelete("{id}")]

@@ -23,12 +23,14 @@ namespace memory_stash.Controllers
             _mGroupsService = mGroupsService;
         }
 
+
         // GET: api/Mgroups
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GroupVM>>> GetMgroups()
         {
             return await _mGroupsService.GetMgroups();
         }
+        
 
         // GET: api/Mgroups/5
         [HttpGet("{id}")]
@@ -36,7 +38,7 @@ namespace memory_stash.Controllers
         {
             var group = await _mGroupsService.GetMgroup(id);
 
-            if (group.Name == null)
+            if (group.Id == 0)
             {
                 return NotFound();
             }
@@ -44,9 +46,10 @@ namespace memory_stash.Controllers
             return group;
         }
 
+
         // GET: api/Mgroups/5/memories
         [HttpGet("{id}/memories")]
-        public async Task<ActionResult<IEnumerable<MemoryVM>>> GetMgroupMemories(int id)
+        public async Task<ActionResult<GroupMemoryVM>> GetMgroupMemories(int id)
         {
             return await _mGroupsService.GetMgroupMemories(id);
         }
@@ -59,8 +62,8 @@ namespace memory_stash.Controllers
             return await _mGroupsService.GetMgroupUsers(id);
         }
 
+
         // PUT: api/Mgroups/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMgroup(int id, GroupUpdateVM group)
         {
@@ -89,9 +92,8 @@ namespace memory_stash.Controllers
         }
 
         // POST: api/Mgroups
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<GroupVM>> PostGroup(GroupVM group)
+        public async Task<ActionResult<GroupVM>> PostGroup(GroupAddVM group)
         {
 
             try
@@ -108,7 +110,6 @@ namespace memory_stash.Controllers
 
 
         // POST: api/Mgroups
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("user")]
         public async Task<ActionResult<GroupVM>> PostMgroupUser(Group_User groupUser)
         {

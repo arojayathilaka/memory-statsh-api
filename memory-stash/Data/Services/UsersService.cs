@@ -58,7 +58,19 @@ namespace memory_stash.Data.Services
             var user = ConvertToMuser(muserVM);
             _context.Users.Add(user);
 
-            await _context.SaveChangesAsync();
+            _context.Database.OpenConnection();
+            try
+            {
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Users ON");
+                await _context.SaveChangesAsync();
+                _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Users OFF");
+            }
+            finally
+            {
+                _context.Database.CloseConnection();
+            }
+
+            //await _context.SaveChangesAsync();
         }
 
         public async Task DeleteMuser(int id)
