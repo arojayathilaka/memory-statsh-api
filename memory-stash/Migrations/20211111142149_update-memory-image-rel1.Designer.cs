@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using memory_stash.Data.Models;
 
 namespace memory_stash.Migrations
 {
     [DbContext(typeof(MemoryStashDbContext))]
-    partial class MemoryStashDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211111142149_update-memory-image-rel1")]
+    partial class updatememoryimagerel1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -38,6 +38,14 @@ namespace memory_stash.Controllers
         }
 
 
+        // GET: api/Memories/MemoryGroups
+        [HttpGet("MemoryGroups")]
+        public async Task<ActionResult<IEnumerable<MemoryGroupVM>>> GetMemoriesWithGroup()
+        {
+            return await _memoriesService.GetMemoriesWithGroup();
+        }
+
+
         // GET: api/Memories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Memory>> GetMemory(int id)

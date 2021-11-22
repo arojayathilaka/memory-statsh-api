@@ -25,6 +25,15 @@ namespace memory_stash.Data.Services
                 .ToListAsync();
         }
 
+        public async Task<List<MemoryGroupVM>> GetMemoriesWithGroup()
+        {
+            var memories = await _context.Memories
+                .Include(m => m.Group)
+                .Select(m => ConvertToMemoryGroupVM(m)).ToListAsync();
+
+            return memories;
+        }
+
         public async Task PutMemory(MemoryUpdateVM memoryVM)
         {
             var memory = ConvertToMemoryFromUpdate(memoryVM);
@@ -111,6 +120,32 @@ namespace memory_stash.Data.Services
                 Title = memory.Title,
                 Description = memory.Description,
                 GroupId = memory.GroupId,
+            };
+        }
+
+        private static MemoryGroupVM ConvertToMemoryGroupVM(Memory memory)
+        {
+            if (memory == null)
+            {
+                return new MemoryGroupVM();
+            }
+
+            var group = memory.Group;
+            var groupVM = new GroupVM();
+            if (group != null)
+            {
+               groupVM = GroupsService.ConvertToMgroupVM(group);           
+            } 
+            
+
+            return new MemoryGroupVM()
+            {
+                Id = memory.Id,
+                Mdate = memory.Mdate,
+                Title = memory.Title,
+                Description = memory.Description,
+                GroupId = memory.GroupId,
+                Group = groupVM
             };
         }
     }

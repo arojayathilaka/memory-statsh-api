@@ -42,12 +42,16 @@ namespace memory_stash
 
             services.AddControllers();
 
+            services.AddCors(); // Make sure you call this previous to AddMvc
+
             services.AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
+
             // Configure DbContext with SQL
             services.AddDbContext<MemoryStashDbContext>(options => options.UseSqlServer(ConnectionString));
+
 
             // Get JWT settings
             var jwtSection = Configuration.GetSection("JWTSettings");
@@ -58,6 +62,7 @@ namespace memory_stash
 
             var appSettings = jwtSection.Get<JWTSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+
 
             services.AddAuthentication(x =>
             {
@@ -76,6 +81,7 @@ namespace memory_stash
                 };
             });
 
+
             services.AddSingleton<IAuthService>(new AuthService());
 
             // Configure the services
@@ -83,6 +89,7 @@ namespace memory_stash
             services.AddTransient<MemoriesService>();
             services.AddTransient<UsersService>();
             services.AddTransient<AuthService>();
+
 
             services.AddSwaggerGen(c =>
             {
@@ -117,6 +124,7 @@ namespace memory_stash
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => options.WithOrigins("http://localhost:4200").AllowAnyMethod());
 
             app.UseDeveloperExceptionPage();
             app.UseSwagger();

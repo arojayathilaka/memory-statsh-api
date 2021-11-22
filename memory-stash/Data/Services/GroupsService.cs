@@ -109,7 +109,7 @@ namespace memory_stash.Data.Services
         }
 
 
-        private static GroupVM ConvertToMgroupVM(Group mgroup)
+        public static GroupVM ConvertToMgroupVM(Group mgroup)
         {
             if (mgroup == null)
             {
